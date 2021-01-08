@@ -1,0 +1,53 @@
+{
+  "queryType": "groupBy",
+  "dataSource": "case21",
+  "granularity": "ALL",
+  "dimensions": ["PULocationID"],
+  "aggregations": [
+    {
+      "type" : "filtered",
+      "filter" : {
+            "type" : "interval",
+            "dimension" : "__time",
+            "intervals" :  ["2019-01-01T00:00:00.000Z/2019-01-02T00:00:00.000Z"]
+          },
+      "aggregator" :     {
+        "type": "thetaSketch", "name": "unique_trips_jan_day1", "fieldName": "trip_desc"
+      }
+    },
+    {
+      "type" : "filtered",
+      "filter" : {
+            "type" : "interval",
+            "dimension" : "__time",
+            "intervals" :  ["2019-02-01T00:00:00.000Z/2019-02-02T00:00:00.000Z"]
+          },
+      "aggregator" :     {
+        "type": "thetaSketch", "name": "unique_trips_feb_day1", "fieldName": "trip_desc"
+      }
+    }
+  ],
+  "postAggregations": [
+    {
+      "type": "thetaSketchEstimate",
+      "name": "final_unique_trips",
+      "field":
+      {
+        "type": "thetaSketchSetOp",
+        "name": "final_unique_trips_sketch",
+        "func": "INTERSECT",
+        "fields": [
+          {
+            "type": "fieldAccess",
+            "fieldName": "unique_trips_jan_day1"
+          },
+          {
+            "type": "fieldAccess",
+            "fieldName": "unique_trips_feb_day1"
+          }
+        ]
+      }
+    }
+  ],
+  "intervals": ["2019-01-01T00:00:00.000/2019-02-02T00:00:00.000"]
+}

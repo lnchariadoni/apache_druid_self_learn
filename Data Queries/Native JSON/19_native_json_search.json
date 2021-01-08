@@ -1,0 +1,14 @@
+{
+  "queryType": "search",
+  "dataSource": "case19",
+  "granularity": "day",
+  "searchDimensions": [  "trip_desc","fare_amount_bucket"],
+  "query": {
+    "type": "insensitive_contains",
+    "value": "1 to "
+  },
+  "sort" : {
+    "type": "lexicographic"
+  },
+  "intervals": [ "2019-01-01T00:00:00.000/2019-01-02T00:00:00.000" ]
+}

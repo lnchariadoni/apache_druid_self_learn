@@ -1,0 +1,49 @@
+{
+  "queryType": "groupBy",
+  "dataSource": "case21",
+  "granularity": "ALL",
+  "dimensions": ["PULocationID"],
+  "aggregations": [
+    {
+      "type" : "filtered",
+      "filter" : {
+            "type" : "interval",
+            "dimension" : "__time",
+            "intervals" :  ["2019-01-01T00:00:00.000Z/2019-01-02T00:00:00.000Z"]
+          },
+      "aggregator" :     {
+        "type": "HLLSketchBuild", "name": "unique_trips_jan_day1", "fieldName": "trip_desc", "lgK" : 16, "tgtHllType" : "HLL_8"
+      }
+    },
+    {
+      "type" : "filtered",
+      "filter" : {
+            "type" : "interval",
+            "dimension" : "__time",
+            "intervals" :  ["2019-02-01T00:00:00.000Z/2019-02-02T00:00:00.000Z"]
+          },
+      "aggregator" :     {
+        "type": "HLLSketchBuild", "name": "unique_trips_feb_day1", "fieldName": "trip_desc", "lgK" : 16, "tgtHllType" : "HLL_8"
+      }
+    }
+  ],
+  "postAggregations": [
+		{
+			"type":"HLLSketchEstimateWithBounds",
+			"name":"final_result",
+			"field":
+				{
+				  "type"  : "HLLSketchUnion",
+				  "name": "final_unique_trips_union_Jan_Feb",
+				  "fields"  : [  
+						 { "type" : "fieldAccess", "name" : "unique_trips_jan_day1", "fieldName" : "unique_trips_jan_day1" },
+						{ "type" : "fieldAccess", "name" : "unique_trips_feb_day1", "fieldName" : "unique_trips_feb_day1" }
+						],
+				  "lgK": 18,
+				  "tgtHllType" : "HLL_8"
+				} ,
+			"numStdDev" : 2
+		}
+	],
+  "intervals": ["2019-01-01T00:00:00.000/2019-02-02T00:00:00.000"]
+}

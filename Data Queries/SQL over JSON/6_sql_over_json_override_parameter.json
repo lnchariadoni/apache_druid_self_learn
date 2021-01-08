@@ -1,0 +1,8 @@
+{
+  "query" : "select TIME_EXTRACT(__time,'month'), count(distinct fake_id) from case21 where total_passenger_count>2 group by 1 order by 1 asc",
+  "resultFormat" : "csv",
+  "header" : true,
+  "context" : {
+    "useApproximateCountDistinct" : false
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "queryType": "topN",
+  "dataSource": "case21",
+  "dimension": "trip_desc",
+  "threshold": 3,
+  "metric": "agg_fare_amount",
+  "granularity": "month",
+  "aggregations": [
+    {
+      "type": "longSum",
+      "name": "agg_passenger_count",
+      "fieldName": "total_passenger_count"
+    },
+    {
+      "type": "doubleSum",
+      "name": "agg_trip_distance",
+      "fieldName": "total_trip_distance"
+    },
+    {
+      "type": "doubleSum",
+      "name": "agg_fare_amount",
+      "fieldName": "total_fare_amount"
+    }
+  ],
+  "intervals": [ "2019-01-01T00:00:00.000/2020-01-01T00:00:00.000" ]
+}

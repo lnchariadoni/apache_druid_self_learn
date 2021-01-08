@@ -1,0 +1,30 @@
+{
+  "queryType": "timeseries",
+  "dataSource": "case21",
+  "granularity": "month",
+  "descending": "true",
+  "aggregations": [
+    { "type": "longSum", "name": "agg_passenger_count", "fieldName": "total_passenger_count" },
+    { "type": "doubleSum", "name": "agg_trip_distance", "fieldName": "total_trip_distance" },
+    { "type": "doubleSum", "name": "agg_fare_amount", "fieldName": "total_fare_amount" },
+    {
+  	"type": "javascript",
+  	"name": "avg_distnace_per_person2",
+  	"fieldNames": ["total_passenger_count", "total_trip_distance"],
+  	"fnAggregate" : "function(current, a, b)      {  return (current  + (b/a)); }",
+  	"fnCombine"   : "function(partialA, partialB) { return partialA + partialB; }",
+  	"fnReset"     : "function()                   { return 0; }"
+    }
+  ],
+  "postAggregations": [
+    { "type": "arithmetic",
+      "name": "avg_distnace_per_person1",
+      "fn": "/",
+      "fields": [
+        { "type": "fieldAccess", "name": "agg_trip_distance2", "fieldName": "agg_trip_distance" },
+        { "type": "fieldAccess", "name": "agg_passenger_count2", "fieldName": "agg_passenger_count" }
+      ]
+    }
+  ],
+  "intervals": [ "2019-01-01T00:00:00.000/2020-01-01T00:00:00.000" ]
+}

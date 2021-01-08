@@ -1,0 +1,15 @@
+{
+   "queryType": "scan",
+   "dataSource": "case19",
+   "resultFormat": "compactedList",
+   "filter": {
+	  "type" : "javascript",
+	  "dimension" : "total_passenger_count",
+	  "function" : "function(value) { return (value>2); }"
+   },
+   "columns":["__time","fare_amount_bucket", "tip_desc", "trip_desc", "total_row_count", "total_passenger_count", "total_trip_distance", "total_fare_amount"],
+   "intervals": [ "2019-01-01/2019-10-10" ],
+   "batchSize":10000000,
+   "limit":100,
+   "order": "ascending"
+}

@@ -1,0 +1,21 @@
+{
+  "queryType": "timeseries",
+  "dataSource": "case21",
+  "granularity": "month",
+  "descending": "true",
+  "filter": {
+	  "type" : "javascript",
+	  "dimension" : "total_passenger_count",
+	  "function" : "function(value) { return (value>2); }"
+  },
+  "aggregations": [
+    { "type": "longSum", "name": "total_passenger_count", "fieldName": "total_passenger_count" },
+    { "type": "doubleSum", "name": "total_trip_distance", "fieldName": "total_trip_distance" },
+    { "type": "doubleSum", "name": "total_fare_amount", "fieldName": "total_fare_amount" }
+  ],
+  "intervals": [ "2019-01-01T00:00:00.000/2020-01-01T00:00:00.000" ],
+  "context": {
+    "grandTotal": true,
+    "skipEmptyBuckets": "true"
+  }
+}

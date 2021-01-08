@@ -1,0 +1,5 @@
+{
+  "query" : "select TIME_EXTRACT(__time,'month'), TIME_EXTRACT(__time,'day'), count(distinct fake_id),sum(total_trip_distance), sum(total_fare_amount) from case21 where total_passenger_count>2 group by 1,2 order by 1 asc",
+  "resultFormat" : "array",
+  "header" : true
+}

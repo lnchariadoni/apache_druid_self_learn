@@ -1,0 +1,9 @@
+{
+    "queryType" : "timeBoundary",
+    "dataSource": "case19",
+    "filter": {
+	  "type" : "javascript",
+	  "dimension" : "total_passenger_count",
+	  "function" : "function(value) { return (value>0); }"
+    }
+}

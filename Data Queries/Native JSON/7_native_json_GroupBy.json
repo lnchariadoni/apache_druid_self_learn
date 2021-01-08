@@ -1,0 +1,40 @@
+{
+  "queryType": "groupBy",
+  "dataSource": "case21",
+  "granularity": "day",
+  "dimensions": ["trip_desc", "tip_desc"],
+  "limitSpec": { "type": "default", "limit": 5, "columns": [
+	{
+	    "dimension" : "trip_desc",
+	    "direction" : "ascending",
+	    "dimensionOrder" : "lexicographic"
+	},
+	{
+	    "dimension" : "agg_fare_amount",
+	    "direction" : "ascending",
+	    "dimensionOrder" : "numeric"
+	} ] },
+  "aggregations": [
+    {
+      "type": "longSum",
+      "name": "agg_passenger_count",
+      "fieldName": "total_passenger_count"
+    },
+    {
+      "type": "doubleSum",
+      "name": "agg_trip_distance",
+      "fieldName": "total_trip_distance"
+    },
+    {
+      "type": "doubleSum",
+      "name": "agg_fare_amount",
+      "fieldName": "total_fare_amount"
+    }
+  ],
+  "intervals": [ "2019-01-01T00:00:00.000/2019-01-03T00:00:00.000" ],
+  "having": {
+    "type": "lessThan",
+    "aggregation": "agg_passenger_count",
+    "value": 50
+  }
+}
