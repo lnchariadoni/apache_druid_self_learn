@@ -1,0 +1,96 @@
+{
+  "type": "index",
+  "ioConfig": {
+    "type": "index",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user/druid_training",
+      "filter": "*sample.csv"
+    }
+  },
+  "tuningConfig": {
+    "type": "index"
+  },
+  "dataSchema": {
+    "dataSource": "case1",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "NONE",
+      "rollup": false
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "tpep_pickup_datetime",
+          "format": "auto"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+            {
+              "type": "long",
+              "name": "DOLocationID"
+            },
+            {
+              "type": "float",
+              "name": "extra"
+            },
+            {
+              "type": "float",
+              "name": "fare_amount"
+            },
+            {
+              "type": "float",
+              "name": "improvement_surcharge"
+            },
+            {
+              "type": "float",
+              "name": "mta_tax"
+            },
+            {
+              "type": "long",
+              "name": "passenger_count"
+            },
+            {
+              "type": "long",
+              "name": "payment_type"
+            },
+            {
+              "type": "long",
+              "name": "PULocationID"
+            },
+            {
+              "type": "long",
+              "name": "RatecodeID"
+            },
+            "store_and_fwd_flag",
+            {
+              "type": "float",
+              "name": "tip_amount"
+            },
+            {
+              "type": "long",
+              "name": "tolls_amount"
+            },
+            {
+              "type": "float",
+              "name": "total_amount"
+            },
+            "tpep_dropoff_datetime",
+            {
+              "type": "float",
+              "name": "trip_distance"
+            },
+            {
+              "type": "long",
+              "name": "VendorID"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

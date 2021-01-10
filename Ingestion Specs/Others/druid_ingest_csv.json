@@ -1,0 +1,90 @@
+{
+  "type" : "index",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "druid_sample_data_csv",
+      "parser" : {
+        "type" : "string",
+        "parseSpec" : {
+          "format" : "csv",
+		  "hasHeaderRow": true,
+          "dimensionsSpec" : {
+            "dimensions" : [
+            { "name" : "customer_dob", "type" : "datetimestamp" },
+            "customer_gender",
+            "customer_name",
+            "product_category",
+            "product_name",
+            "store_name",
+            {
+              "name": "store_zip_code",
+              "type": "string"
+            }
+            ]
+          },
+          "timestampSpec": {
+            "column": "trans_datetime",
+            "format": "auto"
+          }
+        }
+      },
+      "metricsSpec" : [      
+		  {
+			"name": "count",
+			"type": "count"
+		  },
+		  {
+			"name": "sum_unit_price",
+			"type": "longSum",
+			"fieldName": "unit_price"
+		  },
+		  {
+			"name": "sum_units",
+			"type": "longSum",
+			"fieldName": "units"
+		  },
+		  {
+			"name": "total_amount",
+			"type": "longSum",
+			"fieldName": "total_price"
+		  }
+	  ],
+	  "transformSpec": {
+		  "filter": null,
+		  "transforms": [
+			{
+			  "type": "expression",
+			  "name": "customer_gender",
+			  "expression": "upper(\"customer_gender\")"
+			},
+			{
+			  "type": "expression",
+			  "name": "total_price",
+			  "expression": "cast(unit_price, 'DOUBLE') *cast(units, 'DOUBLE')"
+			}
+		  ]
+		},
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "day",
+        "rollup" : true
+      }
+    },
+    "ioConfig" : {
+      "type" : "index",
+      "firehose" : {
+        "type" : "local",
+        "baseDir" : "/apache-druid-0.15.0-incubating/test_data/",
+        "filter" : "druid_sample_data_1.csv"
+      },
+      "appendToExisting" : false
+    },
+    "tuningConfig" : {
+      "type" : "index",
+      "maxRowsPerSegment" : 5000000,
+      "maxRowsInMemory" : 25000
+    }
+  }
+}
+

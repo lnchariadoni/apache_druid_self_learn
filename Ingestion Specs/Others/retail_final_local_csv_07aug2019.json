@@ -1,0 +1,281 @@
+{
+  "type": "index",
+    "spec" : {
+  "dataSchema": {
+    "dataSource": "retail_final_local_csv",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "NONE",
+      "rollup": false
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "date",
+          "format": "iso"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+            {
+              "type": "long",
+              "name": "Bundle"
+            },
+            "DNAProductTypeDescription",
+            {
+              "type": "long",
+              "name": "DW_EK_CRMConsumer"
+            },
+            {
+              "type": "long",
+              "name": "DW_EK_Product"
+            },
+            {
+              "type": "long",
+              "name": "DW_EK_Store"
+            },
+            {
+              "type": "float",
+              "name": "DiscountGrossAmount_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "DiscountGrossAmount_LCY"
+            },
+            {
+              "type": "float",
+              "name": "DiscountNetAmount_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "DiscountNetAmount_LCY"
+            },
+            {
+              "type": "float",
+              "name": "GrossValue_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "GrossValue_LCY"
+            },
+            "LocalItemID",
+            "LocalStoreID",
+            {
+              "type": "float",
+              "name": "NetValue_DKK"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_DKK_Budget_Last_Year"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_EUR"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_GBP"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_USD"
+            },
+            "ProductGroup",
+            "ProductName",
+            "ProductWeightGold",
+            "ProductWeightSilver",
+            {
+              "type": "float",
+              "name": "Quantity"
+            },
+            "ReportingCategory",
+            "ReportingSubCategory",
+            "Store_AreaManager",
+            "Store_AutoReplenishment",
+			"Store_Change_Of_Ownership_Date",
+            "Store_City",
+            "Store_CountryCode",
+            "Store_CountryName",
+            "Store_DateClose",
+            "Store_DateOpening",
+			"Store_FlagOpen",
+            "Store_Format",
+            "Store_InternationalShopId",
+            "Store_Latitude",
+            "Store_LocalAccountNumber",
+            "Store_Longitude",
+            "Store_Manager",
+            "Store_MarketName",
+            "Store_MarketParentName",
+            "Store_Name",
+            "Store_NameAndCountry",
+            "Store_NameAndOpeningDate",
+            "Store_OwnershipName",
+            "Store_PartnerDistributorName",
+            "Store_RegionOrState",
+			"Store_RegionalSalesManager",
+            "Store_StatusKnown",
+			"Store_TotalArea",
+            "Store_Type",
+            "Storestatus",
+            "TransactionNumber",
+            "TransactionNumber_DW_EK_Store_DW_TS",
+			"TransactionTypeID",
+			"consumer_country",
+			"consumer_gender",
+            {
+              "type": "float",
+              "name": "netvalue_lcy"
+            },
+            "region",
+            {
+              "type": "long",
+              "name": "sku_2009"
+            },
+            {
+              "type": "long",
+              "name": "sku_2010"
+            },
+            {
+              "type": "long",
+              "name": "sku_2011"
+            },
+            {
+              "type": "long",
+              "name": "sku_2012"
+            },
+            {
+              "type": "long",
+              "name": "sku_2013"
+            },
+            {
+              "type": "long",
+              "name": "sku_2014"
+            },
+            {
+              "type": "long",
+              "name": "sku_2015"
+            },
+            {
+              "type": "long",
+              "name": "sku_2016"
+            },
+            {
+              "type": "long",
+              "name": "sku_2017"
+            },
+            {
+              "type": "long",
+              "name": "sku_2018"
+            },
+            "sku_year",
+            "source",
+            {
+              "type": "long",
+              "name": "row_count"
+            },
+            {
+              "type": "string",
+              "name": "netvalue_bucket"
+            }	
+          ],
+			"dimensionExclusions" : ["month","year"]
+        }
+      }
+    },
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "sku_year",
+          "expression": "case_searched(DW_EK_Product == sku_2009,'sku_is_2009', DW_EK_Product == sku_2010,'sku_is_2010', DW_EK_Product == sku_2011,'sku_is_2011', DW_EK_Product == sku_2012,'sku_is_2012', DW_EK_Product == sku_2013,'sku_is_2013', DW_EK_Product == sku_2014,'sku_is_2014', DW_EK_Product == sku_2015,'sku_is_2015', DW_EK_Product == sku_2016,'sku_is_2016', DW_EK_Product == sku_2017,'sku_is_2017', DW_EK_Product == sku_2018,'sku_is_2018','Others')"
+        },
+        {
+          "type": "expression",
+          "name": "DW_EK_CRMConsumer",
+          "expression": "nvl(\"DW_EK_CRMConsumer\" ,-100)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2018",
+          "expression": "nvl(\"sku_2018\",-999)"
+        },			
+        {
+          "type": "expression",
+          "name": "sku_2017",
+          "expression": "nvl(\"sku_2017\",-999)"
+        },			
+        {
+          "type": "expression",
+          "name": "sku_2016",
+          "expression": "nvl(\"sku_2016\",-999)"
+        },			
+        {
+          "type": "expression",
+          "name": "sku_2015",
+          "expression": "nvl(\"sku_2015\",-999)"
+        },		
+        {
+          "type": "expression",
+          "name": "sku_2014",
+          "expression": "nvl(\"sku_2014\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2013",
+          "expression": "nvl(\"sku_2013\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2012",
+          "expression": "nvl(\"sku_2012\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2011",
+          "expression": "nvl(\"sku_2011\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2010",
+          "expression": "nvl(\"sku_2010\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2009",
+          "expression": "nvl(\"sku_2009\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "row_count",
+          "expression": "abs(1)"
+        },	
+        {
+          "type": "expression",
+          "name": "netvalue_bucket",
+          "expression": "case_searched(netvalue_lcy <0,'<0', (netvalue_lcy>=0) && (netvalue_lcy<=50),'>=0 and <=50', (netvalue_lcy>=50) && (netvalue_lcy<=100),'>50 and <=100', '100+')"
+        }	
+      ]
+    }
+  },
+  "ioConfig": {
+    "type": "index",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user",
+      "filter": "retail_10_rows.csv"
+    },
+	"appendToExisting": true
+  },
+  "tuningConfig": {
+    "type": "index"
+  }
+  }
+}

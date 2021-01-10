@@ -1,0 +1,298 @@
+{
+  "type" : "index_hadoop",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "retail_final_hadoop_without_header_csv",
+      "parser" : {
+        "type" : "hadoopyString",
+        "parseSpec" : {
+          "format" : "csv",
+"columns":["date","month","year","region","source","TransactionNumber_DW_EK_Store_DW_TS","DW_EK_Product","DW_EK_Store","DW_EK_CRMConsumer","LocalItemID","LocalStoreID","Quantity","netvalue_lcy","GrossValue_LCY","DiscountNetAmount_LCY","DiscountGrossAmount_LCY","GrossValue_DKK_Budget","NetValue_DKK_Budget","DiscountNetAmount_DKK_Budget","DiscountGrossAmount_DKK_Budget","NetValue_DKK","NetValue_USD","NetValue_GBP","NetValue_EUR","NetValue_DKK_Budget_Last_Year","TransactionTypeID","TransactionNumber","Bundle","ProductGroup","ProductName","ProductWeightGold","ProductWeightSilver","DNAProductTypeDescription","ReportingCategory","ReportingSubCategory","Store_StatusKnown","Store_Name","Store_NameAndOpeningDate","Store_NameAndCountry","Store_CountryCode","Store_CountryName","Store_City","Store_Latitude","Store_Longitude","Store_DateOpening","Store_DateClose","Store_FlagOpen","Store_InternationalShopId","Store_LocalAccountNumber","Store_Manager","Store_TotalArea","Storestatus","Store_OwnershipName","Store_PartnerDistributorName","Store_Format","Store_Type","Store_MarketName","Store_MarketParentName","Store_RegionOrState","Store_AreaManager","Store_AutoReplenishment","Store_Change_Of_Ownership_Date","Store_RegionalSalesManager","consumer_country","consumer_gender","sku_2009","sku_2010","sku_2011","sku_2012","sku_2013","sku_2014","sku_2015","sku_2016","sku_2017","sku_2018","sku_year","row_count","netvalue_bucket"],
+"hasHeaderRow": false,
+"skipHeaderRows": 0,
+          "dimensionsSpec" : {
+            "dimensions" : [
+            {
+              "type": "long",
+              "name": "Bundle"
+            },
+            "DNAProductTypeDescription",
+            {
+              "type": "long",
+              "name": "DW_EK_CRMConsumer"
+            },
+            {
+              "type": "long",
+              "name": "DW_EK_Product"
+            },
+            {
+              "type": "long",
+              "name": "DW_EK_Store"
+            },
+            {
+              "type": "float",
+              "name": "DiscountGrossAmount_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "DiscountGrossAmount_LCY"
+            },
+            {
+              "type": "float",
+              "name": "DiscountNetAmount_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "DiscountNetAmount_LCY"
+            },
+            {
+              "type": "float",
+              "name": "GrossValue_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "GrossValue_LCY"
+            },
+            "LocalItemID",
+            "LocalStoreID",
+            {
+              "type": "float",
+              "name": "NetValue_DKK"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_DKK_Budget"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_DKK_Budget_Last_Year"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_EUR"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_GBP"
+            },
+            {
+              "type": "float",
+              "name": "NetValue_USD"
+            },
+            "ProductGroup",
+            "ProductName",
+            "ProductWeightGold",
+            "ProductWeightSilver",
+            {
+              "type": "float",
+              "name": "Quantity"
+            },
+            "ReportingCategory",
+            "ReportingSubCategory",
+            "Store_AreaManager",
+            "Store_AutoReplenishment",
+	    "Store_Change_Of_Ownership_Date",
+            "Store_City",
+            "Store_CountryCode",
+            "Store_CountryName",
+            "Store_DateClose",
+            "Store_DateOpening",
+	    "Store_FlagOpen",
+            "Store_Format",
+            "Store_InternationalShopId",
+            "Store_Latitude",
+            "Store_LocalAccountNumber",
+            "Store_Longitude",
+            "Store_Manager",
+            "Store_MarketName",
+            "Store_MarketParentName",
+            "Store_Name",
+            "Store_NameAndCountry",
+            "Store_NameAndOpeningDate",
+            "Store_OwnershipName",
+            "Store_PartnerDistributorName",
+            "Store_RegionOrState",
+	    "Store_RegionalSalesManager",
+            "Store_StatusKnown",
+	    "Store_TotalArea",
+            "Store_Type",
+            "Storestatus",
+            "TransactionNumber",
+            "TransactionNumber_DW_EK_Store_DW_TS",
+	    "TransactionTypeID",
+	    "consumer_country",
+	    "consumer_gender",
+            {
+              "type": "float",
+              "name": "netvalue_lcy"
+            },
+            "region",
+            {
+              "type": "long",
+              "name": "sku_2009"
+            },
+            {
+              "type": "long",
+              "name": "sku_2010"
+            },
+            {
+              "type": "long",
+              "name": "sku_2011"
+            },
+            {
+              "type": "long",
+              "name": "sku_2012"
+            },
+            {
+              "type": "long",
+              "name": "sku_2013"
+            },
+            {
+              "type": "long",
+              "name": "sku_2014"
+            },
+            {
+              "type": "long",
+              "name": "sku_2015"
+            },
+            {
+              "type": "long",
+              "name": "sku_2016"
+            },
+            {
+              "type": "long",
+              "name": "sku_2017"
+            },
+            {
+              "type": "long",
+              "name": "sku_2018"
+            },
+            "sku_year",
+            "source",
+            {
+              "type": "long",
+              "name": "row_count"
+            },
+            {
+              "type": "string",
+              "name": "netvalue_bucket"
+            }	
+          ],
+			"dimensionExclusions" : ["month","year"]
+          },
+          "timestampSpec" : {
+            "format" : "iso",
+            "column" : "date"
+          }
+        }
+      },
+      "metricsSpec" : [],
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "none",
+        "rollup" : false
+      },
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "sku_year",
+          "expression": "case_searched(DW_EK_Product == sku_2009,'sku_is_2009', DW_EK_Product == sku_2010,'sku_is_2010', DW_EK_Product == sku_2011,'sku_is_2011', DW_EK_Product == sku_2012,'sku_is_2012', DW_EK_Product == sku_2013,'sku_is_2013', DW_EK_Product == sku_2014,'sku_is_2014', DW_EK_Product == sku_2015,'sku_is_2015', DW_EK_Product == sku_2016,'sku_is_2016', DW_EK_Product == sku_2017,'sku_is_2017', DW_EK_Product == sku_2018,'sku_is_2018','Others')"
+        },
+        {
+          "type": "expression",
+          "name": "DW_EK_CRMConsumer",
+          "expression": "nvl(\"DW_EK_CRMConsumer\" ,-100)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2018",
+          "expression": "nvl(\"sku_2018\",-999)"
+        },			
+        {
+          "type": "expression",
+          "name": "sku_2017",
+          "expression": "nvl(\"sku_2017\",-999)"
+        },			
+        {
+          "type": "expression",
+          "name": "sku_2016",
+          "expression": "nvl(\"sku_2016\",-999)"
+        },			
+        {
+          "type": "expression",
+          "name": "sku_2015",
+          "expression": "nvl(\"sku_2015\",-999)"
+        },		
+        {
+          "type": "expression",
+          "name": "sku_2014",
+          "expression": "nvl(\"sku_2014\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2013",
+          "expression": "nvl(\"sku_2013\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2012",
+          "expression": "nvl(\"sku_2012\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2011",
+          "expression": "nvl(\"sku_2011\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2010",
+          "expression": "nvl(\"sku_2010\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "sku_2009",
+          "expression": "nvl(\"sku_2009\",-999)"
+        },
+        {
+          "type": "expression",
+          "name": "row_count",
+          "expression": "abs(1)"
+        },	
+        {
+          "type": "expression",
+          "name": "netvalue_bucket",
+          "expression": "case_searched(netvalue_lcy <0,'<0', (netvalue_lcy>=0) && (netvalue_lcy<=50),'>=0 and <=50', (netvalue_lcy>=50) && (netvalue_lcy<=100),'>50 and <=100', '100+')"
+        }	
+      ]
+    }
+    },
+    "ioConfig" : {
+      "type" : "hadoop",
+      "inputSpec" : {
+        "type" : "static",
+    "paths" : "/user/user/retail_10_rows.csv.gz"
+      },
+	  	"appendToExisting": true
+    },
+    "tuningConfig" : {
+      "type" : "hadoop",
+      "partitionsSpec" : {
+        "type" : "hashed",
+        "targetPartitionSize" : 5000000
+      },
+      "forceExtendableShardSpecs" : true,
+      "jobProperties" : {
+        "mapreduce.job.classloader": "true",
+        "io.compression.codecs": "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec",
+        "mapreduce.map.java.opts" : "-Duser.timezone=UTC -Dfile.encoding=UTF-8",
+        "mapreduce.job.user.classpath.first" : "true",
+        "mapreduce.reduce.java.opts" : "-Duser.timezone=UTC -Dfile.encoding=UTF-8",
+        "hdp.version": "3.1.0.0-78",
+        "mapreduce.job.classloader.system.classes": "-javax.validation.,java.,javax.,org.apache.commons.logging.,org.apache.log4j.,org.apache.hadoop."
+      }
+    }
+  },
+  "hadoopDependencyCoordinates": ["org.apache.hadoop:hadoop-client:2.8.3"]
+}

@@ -1,0 +1,183 @@
+{
+  "type": "index",
+  "ioConfig": {
+    "type": "index",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user/druid_training",
+      "filter": "yellow_tripdata_2018-01.csv"
+    },
+    "appendToExisting": true
+  },
+  "tuningConfig": {
+    "type": "index"
+  },
+  "dataSchema": {
+    "dataSource": "case21",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "tpep_pickup_datetime",
+          "format": "auto"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+            "fare_amount_bucket",
+            "trip_week_day_desc",
+            "tip_desc",
+            "trip_desc",
+            {
+              "type": "long",
+              "name": "DOLocationID"
+            },
+            {
+              "type": "long",
+              "name": "payment_type"
+            },
+            {
+              "type": "long",
+              "name": "PULocationID"
+            },
+            {
+              "type": "long",
+              "name": "RatecodeID"
+            },
+            "store_and_fwd_flag",
+            "tpep_dropoff_datetime",
+            {
+              "type": "long",
+              "name": "VendorID"
+            },
+            {
+              "type": "long",
+              "name": "fake_id"
+            }
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "total_row_count",
+        "type": "count"
+      },
+      {
+        "name": "total_passenger_count",
+        "type": "longSum",
+        "fieldName": "passenger_count"
+      },
+      {
+        "name": "total_trip_distance",
+        "type": "doubleSum",
+        "fieldName": "trip_distance"
+      },
+      {
+        "name": "total_fare_amount",
+        "type": "doubleSum",
+        "fieldName": "fare_amount"
+      },
+      {
+        "name": "total_extra",
+        "type": "doubleSum",
+        "fieldName": "extra"
+      },
+      {
+        "name": "total_mta_tax",
+        "type": "doubleSum",
+        "fieldName": "mta_tax"
+      },
+      {
+        "name": "total_tip_amount",
+        "type": "doubleSum",
+        "fieldName": "tip_amount"
+      },
+      {
+        "name": "total_tolls_amount",
+        "type": "doubleSum",
+        "fieldName": "tolls_amount"
+      },
+      {
+        "name": "total_improvement_surcharge",
+        "type": "doubleSum",
+        "fieldName": "improvement_surcharge"
+      },
+      {
+        "name": "total_total_amount",
+        "type": "doubleSum",
+        "fieldName": "total_amount"
+      },
+      {
+        "name": "total_congestion_surcharge",
+        "type": "doubleSum",
+        "fieldName": "congestion_surcharge"
+      },
+      {
+        "name": "trip_duration_in_minutes",
+        "type": "doubleSum",
+        "fieldName": "trip_duration_in_minutes_computation"
+      },
+          {
+            "name" : "fake_id_hyperuniqe",
+            "type" : "hyperUnique",
+            "fieldName" : "fake_id"
+          },
+	{
+	  "type" : "thetaSketch",
+	  "name" : "fake_id_thetaSketch",
+	  "fieldName" : "fake_id",
+	  "isInputThetaSketch": false,
+	  "size": 128
+	 },
+	{
+	  "type" : "HLLSketchBuild",
+	  "name" : "fake_id_HLLSketch",
+	  "fieldName" : "fake_id",
+	  "lgK" : 8,
+	  "tgtHllType" : "HLL_6"
+	 }
+    ],
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "fare_amount_bucket",
+          "expression": "if(\"fare_amount\" <=5,'1 to 5', if( ((\"fare_amount\" >5) && (\"fare_amount\"<=10) ),'6 to 10', 'more than 10'))"
+        },
+        {
+          "type": "expression",
+          "name": "trip_desc",
+          "expression": "concat('From ', PULocationID, ' to ', DOLocationID)"
+        },
+        {
+          "type": "expression",
+          "name": "tip_desc",
+          "expression": "if(\"tip_amount\">0,'Party Time','No Tips')"
+        },
+        {
+          "type": "expression",
+          "name": "trip_duration_in_minutes_computation",
+          "expression": "(timestamp(\"tpep_dropoff_datetime\",'yyyy-MM-dd HH:mm:ss')/1000 - timestamp(\"tpep_pickup_datetime\",'yyyy-MM-dd HH:mm:ss')/1000 )/60"
+        },
+        {
+          "type": "expression",
+          "name": "trip_week_day_desc",
+          "expression": "case_searched(timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==1,'Monday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==2,'Tuesday',timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==3,'Wednesday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==4,'Thursday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==5,'Friday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==6,'Saturday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==7,'Sunday','Others')"
+        },
+{
+          "type": "expression",
+          "name": "fake_id",
+          "expression": "( timestamp(tpep_dropoff_datetime,'yyyy-MM-dd HH:mm:ss') * 1000000 ) + (DOLocationID*1000) + (PULocationID*1) "
+        }        
+      ]
+    }
+  }
+}

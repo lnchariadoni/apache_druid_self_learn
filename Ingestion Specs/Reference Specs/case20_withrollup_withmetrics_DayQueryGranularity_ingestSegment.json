@@ -1,0 +1,129 @@
+{
+  "type": "index_parallel",
+  "ioConfig": {
+    "type": "index_parallel",
+    "firehose": {
+      "type": "ingestSegment",
+      "dataSource": "case9",
+      "interval": "2019-01-01/2019-03-01",
+      "dimensions": [
+        "fare_amount_bucket",
+        "trip_week_day_desc",
+        "tip_desc",
+        "trip_desc",
+	"new_transformed_dimension"
+      ],
+      "metrics": [
+        "total_row_count",
+        "total_passenger_count",
+        "total_trip_distance",
+        "total_fare_amount",
+        "total_tip_amount",
+        "total_total_amount",
+        "trip_duration_in_minutes"
+      ],
+      "filter": null
+    }
+  },
+  "tuningConfig": {
+    "type": "index_parallel"
+  },
+  "dataSchema": {
+    "dataSource": "case20",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "DAY",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "timeAndDims",
+        "timestampSpec": {
+          "column": "tpep_pickup_datetime",
+          "format": "auto",
+          "missingValue": null
+        },
+        "dimensionsSpec": {
+          "dimensions": [
+	    "new_transformed_dimension",
+            {
+              "name": "fare_amount_bucket",
+              "type": "string"
+            },
+            {
+              "name": "tip_desc",
+              "type": "string"
+            },
+            {
+              "name": "tpep_dropoff_datetime",
+              "type": "string"
+            },
+            {
+              "name": "trip_desc",
+              "type": "string"
+            },
+            {
+              "name": "trip_week_day_desc",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "type": "doubleSum",
+        "name": "total_tip_amount",
+        "fieldName": "total_tip_amount",
+        "expression": null
+      },
+      {
+        "type": "doubleSum",
+        "name": "total_fare_amount",
+        "fieldName": "total_fare_amount",
+        "expression": null
+      },
+      {
+        "type": "doubleSum",
+        "name": "total_trip_distance",
+        "fieldName": "total_trip_distance",
+        "expression": null
+      },
+      {
+        "type": "longSum",
+        "name": "total_row_count",
+        "fieldName": "total_row_count",
+        "expression": null
+      },
+      {
+        "type": "doubleSum",
+        "name": "total_total_amount",
+        "fieldName": "total_total_amount",
+        "expression": null
+      },
+      {
+        "type": "longSum",
+        "name": "total_passenger_count",
+        "fieldName": "total_passenger_count",
+        "expression": null
+      },
+      {
+        "type": "doubleSum",
+        "name": "trip_duration_in_minutes",
+        "fieldName": "trip_duration_in_minutes",
+        "expression": null
+      }
+    ],
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "new_transformed_dimension",
+          "expression": "\"tip_desc\" + ' - ' + \"trip_desc\""
+        }
+      ]
+    }
+  }
+}

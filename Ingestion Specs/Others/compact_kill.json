@@ -1,0 +1,30 @@
+{
+  "type" : "compact",
+  "dataSource" : "retail_final_full",
+  "interval" : "2011-01-01/2011-04-01"
+}
+
+{
+  "type" : "compact",
+  "dataSource" : "retail_final_full",
+  "interval" : "2011-04-01/2011-07-01"
+}
+
+{
+  "type" : "compact",
+  "dataSource" : "retail_final_full",
+  "interval" : "2011-07-01/2011-10-01"
+}
+
+{
+  "type" : "compact",
+  "dataSource" : "retail_final_full",
+  "interval" : "2011-10-01/2012-01-01"
+}
+
+
+{
+    "type": "kill",
+    "dataSource": "retail_final_full",
+    "interval" : "2011-01-01/2015-01-01"
+}

@@ -1,0 +1,216 @@
+{
+  "type": "index_parallel",
+  "dataSchema": {
+    "dataSource": "retail_data_rollup_index_sketches",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "DAY",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "date",
+          "format": "iso"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+            "DNAProductTypeDescription",
+            "LocalItemID",
+            "ProductGroup",
+            "ProductName",
+            "ProductWeightGold",
+            "ProductWeightSilver",
+            "ReportingCategory",
+            "ReportingSubCategory",
+            "Store_AreaManager",
+            "Store_City",
+            "Store_CountryCode",
+            "Store_CountryName",
+            "Store_DateClose",
+            "Store_DateOpening",
+            "Store_Format",
+            "Store_InternationalShopId",
+            "Store_Latitude",
+            "Store_LocalAccountNumber",
+            "Store_Longitude",
+            "Store_Manager",
+            "Store_MarketName",
+            "Store_MarketParentName",
+            "Store_Name",
+            "Store_NameAndCountry",
+            "Store_NameAndOpeningDate",
+            "Store_OwnershipName",
+            "Store_PartnerDistributorName",
+            "Store_RegionOrState",
+            "Store_StatusKnown",
+            "Store_Type",
+            "Storestatus",
+            "TransactionNumber",
+            "TransactionNumber_DW_EK_Store_DW_TS",
+            "region",
+            "sku_year",
+            "source",
+			{
+				"type": "long",
+				"name": "Bundle"
+			},
+			{
+				"name": "DW_EK_Product",
+				"type": "long"
+			},
+			{
+				"name": "DW_EK_Store",
+				"type": "long"
+			},
+			{
+				"name": "LocalStoreID",
+				"type": "long"
+			},
+			{
+				"name": "Store_FlagOpen",
+				"type": "long"
+			},
+			{
+				"name": "TransactionTypeID",
+				"type": "long"
+			},
+			{
+				"name": "month",
+				"type": "long"
+			},
+			{
+				"name": "sku_2009",
+				"type": "long"
+			},
+			{
+				"name": "sku_2010",
+				"type": "long"
+			},
+			{
+				"name": "sku_2011",
+				"type": "long"
+			},
+			{
+				"name": "sku_2012",
+				"type": "long"
+			},
+			{
+				"name": "sku_2013",
+				"type": "long"
+			},
+			{
+				"name": "sku_2014",
+				"type": "long"
+			},
+			{
+				"name": "sku_2015",
+				"type": "long"
+			},
+			{
+				"name": "sku_2016",
+				"type": "long"
+			},
+			{
+				"name": "sku_2017",
+				"type": "long"
+			},
+			{
+				"name": "sku_2018",
+				"type": "long"
+			},
+			{
+				"name": "year",
+				"type": "long"
+			}
+          ]
+        }
+      }
+    },
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "sku_year",
+          "expression": "case_searched(DW_EK_Product == sku_2009,'sku_is_2009', DW_EK_Product == sku_2010,'sku_is_2010', DW_EK_Product == sku_2011,'sku_is_2011', DW_EK_Product == sku_2012,'sku_is_2012', DW_EK_Product == sku_2013,'sku_is_2013', DW_EK_Product == sku_2014,'sku_is_2014', DW_EK_Product == sku_2015,'sku_is_2015', DW_EK_Product == sku_2016,'sku_is_2016', DW_EK_Product == sku_2017,'sku_is_2017', DW_EK_Product == sku_2018,'sku_is_2018','Others')"
+        }
+      ]
+    },
+    "metricsSpec": [
+      {
+        "name": "count",
+        "type": "count"
+      },
+ 
+      {
+        "name": "Quantity",
+        "type": "longSum",
+        "fieldName": "Quantity"
+      },
+	{
+		"name":"NetValue_DKK",
+		"type": "doubleSum",
+		"fieldName": "NetValue_DKK"
+	},
+		
+	{
+		"name":"NetValue_DKK_Budget",
+		"type": "doubleSum",
+		"fieldName": "NetValue_DKK_Budget"
+	},
+	{
+		"name":"NetValue_DKK_Budget_Last_Year",
+		"type": "doubleSum",
+		"fieldName": "NetValue_DKK_Budget_Last_Year"
+	},
+	{
+		"name":"NetValue_EUR",
+		"type": "doubleSum",
+		"fieldName": "NetValue_EUR"
+	},
+	{
+		"name":"NetValue_GBP",
+		"type": "doubleSum",
+		"fieldName": "NetValue_GBP"
+	},	
+	{
+		"name":"netvalue_lcy",
+		"type": "doubleSum",
+		"fieldName": "netvalue_lcy"
+	},		  
+	{
+		"name":"NetValue_USD",
+		"type": "doubleSum",
+		"fieldName": "NetValue_USD"
+	},
+	{ 
+		"type": "thetaSketch", 
+		"name": "prod_sketch_theta", 
+		"fieldName": "DW_EK_Product",
+		"size":16
+	},
+	{ 
+		"type": "thetaSketch", 
+		"name": "store_sketch_theta", 
+		"fieldName": "DW_EK_Store",
+		"size":16		
+	}
+    ]
+  },
+  "ioConfig": {
+    "type": "index_parallel",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/tmp/retail_data",
+      "filter": "retail_AME_2015_12.zip"
+    },
+    "appendToExisting": true
+  },
+  "tuningConfig": {
+    "type": "index_parallel"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "type": "kafka",
+  "ioConfig": {
+    "type": "kafka",
+    "consumerProperties": {
+      "bootstrap.servers": "localhost:9092"
+    },
+    "topic": "druid_ingest",
+    "taskCount": 1,
+    "replicas": 1,
+    "taskDuration": "PT1H"
+  },
+  "tuningConfig": {
+    "type": "kafka",
+    "maxRowsPerSegment": 5000000,
+	"resetOffsetAutomatically": true
+  },
+  "dataSchema": {
+    "dataSource": "case11",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "tpep_pickup_datetime",
+          "format": "auto"
+        },
+        "hasHeaderRow": false,
+        "columns": [
+          "VendorID",
+          "tpep_pickup_datetime",
+          "tpep_dropoff_datetime",
+          "passenger_count",
+          "trip_distance",
+          "RatecodeID",
+          "store_and_fwd_flag",
+          "PULocationID",
+          "DOLocationID",
+          "payment_type",
+          "fare_amount",
+          "extra",
+          "mta_tax",
+          "tip_amount",
+          "tolls_amount",
+          "improvement_surcharge",
+          "total_amount",
+          "congestion_surcharge",
+          "fare_amount_bucket",
+          "trip_week_day_desc",
+          "tip_desc",
+          "trip_desc",
+          "trip_duration_in_minutes",
+          "trip_duration_in_minutes_computation"
+        ],
+        "dimensionsSpec": {
+          "dimensions": [
+            "fare_amount_bucket",
+            "trip_week_day_desc",
+            "tip_desc",
+            "trip_desc",
+            {
+              "type": "long",
+              "name": "DOLocationID"
+            },
+            {
+              "type": "long",
+              "name": "payment_type"
+            },
+            {
+              "type": "long",
+              "name": "PULocationID"
+            },
+            {
+              "type": "long",
+              "name": "RatecodeID"
+            },
+            "store_and_fwd_flag",
+            "tpep_dropoff_datetime",
+            {
+              "type": "long",
+              "name": "VendorID"
+            }
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "total_row_count",
+        "type": "count"
+      },
+      {
+        "name": "total_passenger_count",
+        "type": "longSum",
+        "fieldName": "passenger_count"
+      },
+      {
+        "name": "total_trip_distance",
+        "type": "doubleSum",
+        "fieldName": "trip_distance"
+      },
+      {
+        "name": "total_fare_amount",
+        "type": "doubleSum",
+        "fieldName": "fare_amount"
+      },
+      {
+        "name": "total_extra",
+        "type": "doubleSum",
+        "fieldName": "extra"
+      },
+      {
+        "name": "total_mta_tax",
+        "type": "doubleSum",
+        "fieldName": "mta_tax"
+      },
+      {
+        "name": "total_tip_amount",
+        "type": "doubleSum",
+        "fieldName": "tip_amount"
+      },
+      {
+        "name": "total_tolls_amount",
+        "type": "doubleSum",
+        "fieldName": "tolls_amount"
+      },
+      {
+        "name": "total_improvement_surcharge",
+        "type": "doubleSum",
+        "fieldName": "improvement_surcharge"
+      },
+      {
+        "name": "total_total_amount",
+        "type": "doubleSum",
+        "fieldName": "total_amount"
+      },
+      {
+        "name": "total_congestion_surcharge",
+        "type": "doubleSum",
+        "fieldName": "congestion_surcharge"
+      },
+      {
+        "name": "trip_duration_in_minutes",
+        "type": "doubleSum",
+        "fieldName": "trip_duration_in_minutes_computation"
+      }
+    ],
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "fare_amount_bucket",
+          "expression": "if(\"fare_amount\" <=5,'1 to 5', if( ((\"fare_amount\" >5) && (\"fare_amount\"<=10) ),'6 to 10', 'more than 10'))"
+        },
+        {
+          "type": "expression",
+          "name": "trip_desc",
+          "expression": "concat('From ', PULocationID, ' to ', DOLocationID)"
+        },
+        {
+          "type": "expression",
+          "name": "tip_desc",
+          "expression": "if(\"tip_amount\">0,'Party Time','No Tips')"
+        },
+        {
+          "type": "expression",
+          "name": "trip_duration_in_minutes_computation",
+          "expression": "(timestamp(\"tpep_dropoff_datetime\",'yyyy-MM-dd HH:mm:ss')/1000 - timestamp(\"tpep_pickup_datetime\",'yyyy-MM-dd HH:mm:ss')/1000 )/60"
+        },
+        {
+          "type": "expression",
+          "name": "trip_week_day_desc",
+          "expression": "case_searched(timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==1,'Monday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==2,'Tuesday',timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==3,'Wednesday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==4,'Thursday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==5,'Friday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==6,'Saturday', timestamp_extract(timestamp(tpep_pickup_datetime,'yyyy-MM-dd HH:mm:ss'),'DOW')==7,'Sunday','Others')"
+        }
+      ]
+    }
+  }
+}

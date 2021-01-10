@@ -1,0 +1,94 @@
+{
+  "type": "index",
+  "dataSchema": {
+    "dataSource": "javascrip_2",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "trans_date",
+          "format": "iso"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+            "category",
+            "category_desc",
+			"category_desc_js",
+            "customer",
+            "sku"				
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "count",
+        "type": "count"
+      },
+      {
+        "name": "sum_price_per_unit",
+        "type": "longSum",
+        "fieldName": "price_per_unit"
+      },
+      {
+        "name": "sum_units",
+        "type": "longSum",
+        "fieldName": "units"
+      },
+      {
+        "name": "avg_price_per_unit_num",
+        "type": "doubleSum",
+		"expression" : "(price_per_unit * cast(units,'LONG'))"
+      },
+	  
+		{
+		  "type": "javascript",
+		  "name": "js_avg_price_per_unit_num",
+		  "fieldNames": ["price_per_unit", "units"],
+		  "fnAggregate" : "function(current, a, b)      { return current + (a*b); }",
+		  "fnCombine"   : "function(partialA, partialB) { return partialA + partialB; }",
+		  "fnReset"     : "function()                   { return 0; }"
+		}
+	  
+    ],
+    "transformSpec": {
+      "transforms": [
+	          {
+          "type": "expression",
+          "name": "category_desc",
+          "expression": "if(\"category\"=='CSD','Carbonated Soft Drinks_JS','Unknown_JS')"
+        }
+      ],
+      "filter": {
+        "type": "javascript",
+        "dimension": "price_per_unit",
+		"function" : "function(x) { return(x >= 2) }"
+      },
+	  {
+        "type": "bound",
+        "dimension": "price_per_unit",
+        "lower": "2",
+		"ordering": "numeric"
+      }
+    }
+  },
+  "ioConfig": {
+    "type": "index",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user",
+      "filter": "javascript_data.csv"
+    }
+  },
+  "tuningConfig": {
+    "type": "index"
+  }
+}

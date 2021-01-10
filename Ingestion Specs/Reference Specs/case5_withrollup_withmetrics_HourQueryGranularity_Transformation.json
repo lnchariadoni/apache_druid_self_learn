@@ -1,0 +1,138 @@
+{
+  "type": "index",
+  "ioConfig": {
+    "type": "index",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user/druid_training",
+      "filter": "*sample.csv"
+    }
+  },
+  "tuningConfig": {
+    "type": "index"
+  },
+  "dataSchema": {
+    "dataSource": "case5",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "tpep_pickup_datetime",
+          "format": "auto"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+            "fare_amount_bucket",
+            "tip_desc",
+            "trip_desc",
+            {
+              "type": "long",
+              "name": "DOLocationID"
+            },
+            {
+              "type": "long",
+              "name": "payment_type"
+            },
+            {
+              "type": "long",
+              "name": "PULocationID"
+            },
+            {
+              "type": "long",
+              "name": "RatecodeID"
+            },
+            "store_and_fwd_flag",
+            "tpep_dropoff_datetime",
+            {
+              "type": "long",
+              "name": "VendorID"
+            }
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "total_row_count",
+        "type": "count"
+      },
+      {
+        "name": "total_passenger_count",
+        "type": "longSum",
+        "fieldName": "passenger_count"
+      },
+      {
+        "name": "total_trip_distance",
+        "type": "doubleSum",
+        "fieldName": "trip_distance"
+      },
+      {
+        "name": "total_fare_amount",
+        "type": "doubleSum",
+        "fieldName": "fare_amount"
+      },
+      {
+        "name": "total_extra",
+        "type": "doubleSum",
+        "fieldName": "extra"
+      },
+      {
+        "name": "total_mta_tax",
+        "type": "doubleSum",
+        "fieldName": "mta_tax"
+      },
+      {
+        "name": "total_tip_amount",
+        "type": "doubleSum",
+        "fieldName": "tip_amount"
+      },
+      {
+        "name": "total_tolls_amount",
+        "type": "doubleSum",
+        "fieldName": "tolls_amount"
+      },
+      {
+        "name": "total_improvement_surcharge",
+        "type": "doubleSum",
+        "fieldName": "improvement_surcharge"
+      },
+      {
+        "name": "total_total_amount",
+        "type": "doubleSum",
+        "fieldName": "total_amount"
+      },
+      {
+        "name": "total_congestion_surcharge",
+        "type": "doubleSum",
+        "fieldName": "congestion_surcharge"
+      }
+    ],
+    "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "fare_amount_bucket",
+          "expression": "if(\"fare_amount\" <=5,'1 to 5', if( ((\"fare_amount\" >5) && (\"fare_amount\"<=10) ),'6 to 10', 'more than 10'))"
+        },
+        {
+          "type": "expression",
+          "name": "trip_desc",
+          "expression": "concat('From ', PULocationID, ' to ', DOLocationID)"
+        },
+        {
+          "type": "expression",
+          "name": "tip_desc",
+          "expression": "if(\"tip_amount\">0,'Party Time','No Tips')"
+        }
+      ]
+    }
+  }
+}

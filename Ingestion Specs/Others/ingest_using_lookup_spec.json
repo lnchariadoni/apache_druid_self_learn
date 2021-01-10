@@ -1,0 +1,70 @@
+-- this should be true in common.runtime.properties, druid.lookup.enableLookupSyncOnStartup=true
+
+{
+  "type": "index",
+  "ioConfig": {
+    "type": "index",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user/druid_training",
+      "filter": "yellow_tripdata_sample.csv"
+    }
+  },
+  "tuningConfig": {
+    "type": "index"
+  },
+  "dataSchema": {
+    "dataSource": "lookup_ingestion",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "csv",
+        "timestampSpec": {
+          "column": "tpep_pickup_datetime",
+          "format": "auto"
+        },
+        "hasHeaderRow": true,
+        "dimensionsSpec": {
+          "dimensions": [
+		"location_desc",
+		"DOLocationID",
+		"PULocationID",
+		"store_and_fwd_flag",
+		"tpep_dropoff_datetime"
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "total_row_count",
+        "type": "count"
+      },
+      {
+        "name": "total_passenger_count",
+        "type": "longSum",
+        "fieldName": "passenger_count"
+      },
+      {
+        "name": "total_total_amount",
+        "type": "doubleSum",
+        "fieldName": "total_amount"
+      }
+    ],
+    "transformSpec": {
+      "transforms": [
+       {
+          "type": "expression",
+          "name": "location_desc",
+          "expression": "lookup( \"DOLocationID\", 'location_to_zone')"
+        }
+      ]
+    }
+  }
+}

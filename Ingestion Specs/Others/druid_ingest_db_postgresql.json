@@ -1,0 +1,63 @@
+{
+  "type" : "index",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "druid_sample_DB",
+      "parser" : {
+        "type" : "map",
+        "parseSpec" : {
+          "format" : "csv",
+		  "hasHeaderRow": true,
+          "dimensionsSpec" : {
+            "dimensions" : ["nse_symbol"]
+          },
+          "timestampSpec": {
+            "column": "first_listing_date",
+            "format": "auto"
+          }
+        }
+      },
+      "metricsSpec" : [      
+		  {
+			"name": "count",
+			"type": "count"
+		  }
+	  ],
+	  "transformSpec": {
+		  "filter": null,
+		  "transforms": [
+		  ]
+		},
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "day",
+        "rollup" : true
+      }
+    },
+    "ioConfig" : {
+            "type": "index",
+            "firehose": {
+                "type": "sql",
+                "database": {
+                    "type": "postgresql",
+                    "connectorConfig": {
+                        "connectURI": "jdbc:postgresql://ambari-server:5432/stock_data",
+                        "user": "postgres",
+                        "password": "Password1234"
+                    }
+                },
+                "sqls": [
+                    "select first_listing_date, nse_symbol from stock_history_data.nse_listed_companies"
+                ]
+            },
+            "appendToExisting": false
+    },
+    "tuningConfig" : {
+      "type" : "index",
+      "maxRowsPerSegment" : 5000000,
+      "maxRowsInMemory" : 25000
+    }
+  }
+}
+

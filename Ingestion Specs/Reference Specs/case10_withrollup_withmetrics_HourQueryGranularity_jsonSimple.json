@@ -1,0 +1,74 @@
+{
+  "type": "index_parallel",
+  "ioConfig": {
+    "type": "index_parallel",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user/druid_training",
+      "filter": "movie_titiles.json"
+    }
+  },
+  "tuningConfig": {
+    "type": "index_parallel"
+  },
+  "dataSchema": {
+    "dataSource": "case10",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "json",
+        "timestampSpec": {
+          "column": "!!!_no_such_column_!!!",
+          "missingValue": "2010-01-01T00:00:00Z"
+        },
+        "dimensionsSpec": {
+          "dimensions": [
+            "cast",
+            "genres",
+            "title",
+            {
+              "name": "year",
+              "type": "string"
+            }
+          ]
+        },
+        "flattenSpec": {
+          "fields": [
+            {
+              "type": "path",
+              "name": "title",
+              "expr": "$.title"
+            },
+            {
+              "type": "path",
+              "name": "year",
+              "expr": "$.year"
+            },
+            {
+              "type": "path",
+              "name": "cast",
+              "expr": "$.cast"
+            },
+            {
+              "type": "path",
+              "name": "genres",
+              "expr": "$.genres"
+            }
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "count",
+        "type": "count"
+      }
+    ]
+  }
+}

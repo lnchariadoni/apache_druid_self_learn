@@ -1,0 +1,114 @@
+{
+  "type": "index_parallel",
+  "ioConfig": {
+    "type": "index_parallel",
+    "firehose": {
+      "type": "local",
+      "baseDir": "/home/user/druid_training",
+      "filter": "yelp_sample.json"
+    }
+  },
+  "tuningConfig": {
+    "type": "index_parallel"
+  },
+  "dataSchema": {
+    "dataSource": "case10.1",
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "HOUR",
+      "rollup": true
+    },
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "json",
+        "timestampSpec": {
+          "column": "!!!_no_such_column_!!!",
+          "missingValue": "2010-01-01T00:00:00Z"
+        },
+        "flattenSpec": {
+          "fields": [
+            {
+              "type": "path",
+              "name": "alcohol_allowed",
+              "expr": "$.attributes.Alcohol"
+            },
+            {
+              "type": "path",
+              "name": "is_bike_parking_available",
+              "expr": "$.attributes.BikeParking"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_friday",
+              "expr": "$.hours.Friday"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_monday",
+              "expr": "$.hours.Monday"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_saturday",
+              "expr": "$.hours.Saturday"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_sunday",
+              "expr": "$.hours.Sunday"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_thursday",
+              "expr": "$.hours.Thursday"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_tuesday",
+              "expr": "$.hours.Tuesday"
+            },
+            {
+              "type": "path",
+              "name": "open_hours_wednesday",
+              "expr": "$.hours.Wednesday"
+            }
+          ]
+        },
+        "dimensionsSpec": {
+          "dimensions": [
+            "address",
+            "business_id",
+            "categories",
+            "city",
+            "alcohol_allowed",
+            "is_bike_parking_available",
+            "open_hours_monday",
+            "open_hours_tuesday",
+            "open_hours_wednesday",
+            "open_hours_thursday",
+            "open_hours_friday",
+            "open_hours_saturday",
+            "open_hours_sunday",
+            "name",
+            "postal_code",
+            "state",
+            "is_open"
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "count",
+        "type": "count"
+      },
+      {
+        "name": "sum_review_count",
+        "type": "longSum",
+        "fieldName": "review_count"
+      }
+    ]
+  }
+}

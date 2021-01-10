@@ -1,0 +1,74 @@
+{
+  "type" : "index_hadoop",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "wikipedia_hdfs",
+      "parser" : {
+        "type" : "hadoopyString",
+        "parseSpec" : {
+          "format" : "json",
+          "dimensionsSpec" : {
+            "dimensions" : [
+              "channel",
+              "cityName",
+              "comment",
+              "countryIsoCode",
+              "countryName",
+              "isAnonymous",
+              "isMinor",
+              "isNew",
+              "isRobot",
+              "isUnpatrolled",
+              "metroCode",
+              "namespace",
+              "page",
+              "regionIsoCode",
+              "regionName",
+              "user",
+              { "name": "added", "type": "long" },
+              { "name": "deleted", "type": "long" },
+              { "name": "delta", "type": "long" }
+            ]
+          },
+          "timestampSpec" : {
+            "format" : "auto",
+            "column" : "time"
+          }
+        }
+      },
+      "metricsSpec" : [],
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "none",
+        "intervals" : ["2015-09-12/2015-09-13"],
+        "rollup" : false
+      }
+    },
+    "ioConfig" : {
+      "type" : "hadoop",
+      "inputSpec" : {
+        "type" : "static",
+    "paths" : "/user/user/wikiticker-2015-09-12-sampled.json.gz"
+      }
+    },
+    "tuningConfig" : {
+      "type" : "hadoop",
+      "partitionsSpec" : {
+        "type" : "hashed",
+        "targetPartitionSize" : 5000000
+      },
+      "forceExtendableShardSpecs" : true,
+      "jobProperties" : {
+        "mapreduce.job.classloader": "true",
+        "io.compression.codecs": "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec",
+        "mapreduce.map.java.opts" : "-Duser.timezone=UTC -Dfile.encoding=UTF-8",
+        "mapreduce.job.user.classpath.first" : "true",
+        "mapreduce.reduce.java.opts" : "-Duser.timezone=UTC -Dfile.encoding=UTF-8",
+        "hdp.version": "3.1.0.0-78",
+        "mapreduce.job.classloader.system.classes": "-javax.validation.,java.,javax.,org.apache.commons.logging.,org.apache.log4j.,org.apache.hadoop."
+      }
+    }
+  },
+  "hadoopDependencyCoordinates": ["org.apache.hadoop:hadoop-client:2.8.3"]
+}

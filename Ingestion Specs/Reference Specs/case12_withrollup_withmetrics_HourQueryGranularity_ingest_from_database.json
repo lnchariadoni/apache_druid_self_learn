@@ -1,0 +1,99 @@
+{
+  "type" : "index",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "case12",
+      "parser" : {
+        "type" : "map",
+        "parseSpec" : {
+          "format" : "csv",
+	  "hasHeaderRow": true,
+          "dimensionsSpec" : {
+            "dimensions" : ["nse_symbol", "isin", "company_name_detail", 
+	            {
+	              "type": "long",
+	              "name": "nse_scrip_dim_id"
+	            }, 	            {
+	              "type": "long",
+	              "name": "time_dim_id"
+	            }]
+          },
+          "timestampSpec": {
+            "column": "calendar_date",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      },
+      "metricsSpec" : [      
+		  {
+			"name": "count",
+			"type": "count"
+		  },
+      {
+        "name": "previous_close_price",
+        "type": "doubleSum",
+        "fieldName": "PREV_CLOSE"
+      },
+      {
+        "name": "today_close_price",
+        "type": "doubleSum",
+        "fieldName": "CLOSE_PRICE"
+      },
+      {
+        "name": "total_traded_quantity",
+        "type": "doubleSum",
+        "fieldName": "total_traded_quantity"
+      },
+      {
+        "name": "52_wk_high_price",
+        "type": "doubleSum",
+        "fieldName": "52_WK_HIGH"
+      },
+      {
+        "name": "52_wk_low_price",
+        "type": "doubleSum",
+        "fieldName": "52_WK_LOW"
+      },
+      {
+        "name": "adjsted_units",
+        "type": "doubleSum",
+        "fieldName": "adjusted_units"
+      }
+	  ],
+	  "transformSpec": {
+		  "filter": null,
+		  "transforms": [
+		  ]
+		},
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "day",
+        "rollup" : false
+      }
+    },
+    "ioConfig" : {
+            "type": "index",
+            "firehose": {
+                "type": "sql",
+                "database": {
+                    "type": "postgresql",
+                    "connectorConfig": {
+                        "connectURI": "jdbc:postgresql://192.168.102:5432/STOCK_DATA",
+                        "user": "postgres",
+                        "password": "Password1234"
+                    }
+                },
+                "sqls": [
+                    "select c.calendar_date ,a.nse_symbol, a.isin, a.company_name_detail, b.nse_scrip_dim_id, b.time_dim_id, b.\"PREV_CLOSE\", b.\"CLOSE_PRICE\" , b.total_traded_quantity, b.\"52_WK_HIGH\",b.\"52_WK_LOW\", b.adjusted_units from stock_history_data.nse_listed_companies a, stock_history_data.nse_scrips_avg b , stock_history_data.time_dim c where a.nse_scrip_dim_id = b.nse_scrip_dim_id and  b.time_dim_id = c.time_dim_id and b.time_dim_id>=20190000 order by 1 asc, 2 asc; "
+                ]
+            },
+            "appendToExisting": false
+    },
+    "tuningConfig" : {
+      "type" : "index",
+      "maxRowsPerSegment" : 5000000,
+      "maxRowsInMemory" : 50000
+    }
+  }
+}

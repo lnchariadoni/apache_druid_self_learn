@@ -1,0 +1,155 @@
+{
+  "type" : "index_hadoop",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "case19",
+      "parser" : {
+        "type" : "parquet",
+        "parseSpec" : {
+          "format" : "parquet",
+          "dimensionsSpec" : {
+            "dimensions" : [
+            "fare_amount_bucket",
+            "tip_desc",
+            "trip_desc",
+            {
+              "type": "long",
+              "name": "DOLocationID"
+            },
+            {
+              "type": "long",
+              "name": "payment_type"
+            },
+            {
+              "type": "long",
+              "name": "PULocationID"
+            },
+            {
+              "type": "long",
+              "name": "RatecodeID"
+            },
+            "store_and_fwd_flag",
+            "tpep_dropoff_datetime",
+            {
+              "type": "long",
+              "name": "VendorID"
+            }
+            ]
+          },
+          "timestampSpec" : {
+            "format" : "auto",
+            "column" : "tpep_pickup_datetime"
+          }
+        }
+      },
+      "metricsSpec" : [
+	        {
+        "name": "total_row_count",
+        "type": "count"
+      },
+      {
+        "name": "total_passenger_count",
+        "type": "longSum",
+        "fieldName": "passenger_count"
+      },
+      {
+        "name": "total_trip_distance",
+        "type": "doubleSum",
+        "fieldName": "trip_distance"
+      },
+      {
+        "name": "total_fare_amount",
+        "type": "doubleSum",
+        "fieldName": "fare_amount"
+      },
+      {
+        "name": "total_extra",
+        "type": "doubleSum",
+        "fieldName": "extra"
+      },
+      {
+        "name": "total_mta_tax",
+        "type": "doubleSum",
+        "fieldName": "mta_tax"
+      },
+      {
+        "name": "total_tip_amount",
+        "type": "doubleSum",
+        "fieldName": "tip_amount"
+      },
+      {
+        "name": "total_tolls_amount",
+        "type": "doubleSum",
+        "fieldName": "tolls_amount"
+      },
+      {
+        "name": "total_improvement_surcharge",
+        "type": "doubleSum",
+        "fieldName": "improvement_surcharge"
+      },
+      {
+        "name": "total_total_amount",
+        "type": "doubleSum",
+        "fieldName": "total_amount"
+      },
+      {
+        "name": "total_congestion_surcharge",
+        "type": "doubleSum",
+        "fieldName": "congestion_surcharge"
+      }
+	  ],
+	      "transformSpec": {
+      "transforms": [
+        {
+          "type": "expression",
+          "name": "fare_amount_bucket",
+          "expression": "if(\"fare_amount\" <=5,'1 to 5', if( ((\"fare_amount\" >5) && (\"fare_amount\"<=10) ),'6 to 10', 'more than 10'))"
+        },
+        {
+          "type": "expression",
+          "name": "trip_desc",
+          "expression": "concat('From ', PULocationID, ' to ', DOLocationID)"
+        },
+        {
+          "type": "expression",
+          "name": "tip_desc",
+          "expression": "if(\"tip_amount\">0,'Party Time','No Tips')"
+        }
+      ]
+    },
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "hour",
+        "rollup" : true
+      }
+    },
+    "ioConfig" : {
+      "type" : "hadoop",
+      "inputSpec" : {
+        "type" : "static",
+	"inputFormat": "org.apache.druid.data.input.parquet.DruidParquetInputFormat",
+    "paths" : "/home/user/druid_training/Druid_parquet_testing/YelloCabs_combined_data_2019_01_02"
+      }
+    },
+    "tuningConfig" : {
+      "type" : "hadoop",
+      "partitionsSpec" : {
+        "type" : "hashed",
+        "targetPartitionSize" : 5000000
+      },
+      "forceExtendableShardSpecs" : true,
+      "jobProperties" : {
+	              "mapreduce.map.java.opts" : "-Duser.timezone=UTC -Dfile.encoding=UTF-8",
+        "mapreduce.job.user.classpath.first" : "true",
+        "mapreduce.reduce.java.opts" : "-Duser.timezone=UTC -Dfile.encoding=UTF-8",
+        "mapreduce.job.classloader.system.classes": "-javax.validation.,java.,javax.,org.apache.commons.logging.,org.apache.log4j.,org.apache.hadoop.",
+        "mapreduce.job.classloader": "true",
+        "io.compression.codecs": "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec",
+                "hdp.version": "3.1.0.0-78"
+      }
+    }
+  },
+  "hadoopDependencyCoordinates": ["org.apache.hadoop:hadoop-client:2.8.3"]
+}
+
