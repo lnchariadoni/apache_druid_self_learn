@@ -1,0 +1,19 @@
+{
+   "__default": {
+     "countrycode_lookup": {
+       "version": "v1",
+       "lookupExtractorFactory": {
+         "type": "cachedNamespace",
+         "extractionNamespace": {
+           "type": "uri",
+           "uri": "file:/home/user/apache-druid-0.15.0-incubating/lookup_data/Store_CountryCode_data.json",
+           "namespaceParseSpec": {
+             "format": "simpleJson"
+           },
+           "pollPeriod": "PT30S"
+         },
+         "firstCacheTimeout": 0
+       }
+     }
+   }
+ }

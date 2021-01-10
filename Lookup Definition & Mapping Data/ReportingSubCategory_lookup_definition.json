@@ -1,0 +1,20 @@
+{
+   "__default": {
+     "subcategory_lookup": {
+       "version": "v1",
+       "lookupExtractorFactory": {
+         "type": "cachedNamespace",
+         "extractionNamespace": {
+           "type": "uri",
+           "uri": "file:/home/user/apache-druid-0.15.0-incubating/lookup_data/ReportingSubCategory_data.json",
+           "namespaceParseSpec": {
+             "format": "simpleJson"
+           },
+           "pollPeriod": "PT30S"
+         },
+         "firstCacheTimeout": 0,
+  	 "injective": true
+       }
+     }
+   }
+ }
