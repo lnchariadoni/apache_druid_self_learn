@@ -1,1 +1,2 @@
-# Apache Druid - Self learning material with examples
+#H1 Purpose
+
